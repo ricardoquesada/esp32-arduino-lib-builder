@@ -11,4 +11,19 @@ sudo pip install --upgrade pip
 git clone https://github.com/espressif/esp32-arduino-lib-builder
 cd esp32-arduino-lib-builder
 ./build.sh
+
+### Build for Bluepad32
+
+Copy Bluepad32 componetns.
+
 ```
+cp -r ~/esp-idf-arduino-bluepad32-template/components/* .
+```
+
+Build it
+
+```
+./build.sh -t esp32 -c ~/.arduino15/packages/esp32-bluepad32 -s
+```
+
+
