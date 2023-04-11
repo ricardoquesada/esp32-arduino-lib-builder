@@ -4,7 +4,7 @@
 			"file":"libspi_flash.a",
 			"src":"build/esp-idf/spi_flash/libspi_flash.a",
 			"out":"lib/libspi_flash.a",
-			"targets":["esp32","esp32c3","esp32s2","esp32s3"]
+			"targets":["esp32","esp32c3","esp32s3"]
 		},
 		{
 			"file":"libesp_system.a",
