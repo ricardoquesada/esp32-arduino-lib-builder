@@ -1,0 +1,76 @@
+{
+  "packages": [
+    {
+      "name": "ESP32-Bluepad32",
+      "maintainer": "Ricardo Quesada",
+      "websiteURL": "https://gitlab.com/ricardoquesada/bluepad32",
+      "email": "unijoysticle@gmail.com",
+      "help": {
+        "online": "https://discord.gg/r5aMn6Cw5q"
+      },
+      "platforms": [
+        {
+          "name": "esp32_bluepad32",
+          "architecture": "esp32",
+          "version": "2.0.7",
+          "category": "Contributed",
+          "url": "https://gitlab.com/ricardoquesada/bluepad32/uploads/9b79b1b9d3249782b9d08693f390ce94/bluepad32-arduino-v3.7.0.zip",
+          "archiveFileName": "esp32-bluepad32-3.7.0.zip",
+          "checksum": "SHA-256:b5a7a54fca36501d1108413310ec50ae2df655c14c3881325903cde2c7ae5f80",
+          "size": "278966011",
+          "help": {
+            "online": ""
+          },
+          "boards": [
+            {
+              "name": "ESP32 Dev Board"
+            },
+            {
+              "name": "ESP32-S3 Dev Board"
+            },
+            {
+              "name": "ESP32-C3 Dev Board"
+            }
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "esp32",
+              "name": "xtensa-esp32-elf-gcc",
+              "version": "esp-2021r2-patch5-8.4.0"
+            },
+            {
+              "packager": "esp32",
+              "name": "xtensa-esp32s3-elf-gcc",
+              "version": "esp-2021r2-patch5-8.4.0"
+            },
+            {
+              "packager": "esp32",
+              "name": "riscv32-esp-elf-gcc",
+              "version": "esp-2021r2-patch5-8.4.0"
+            },
+            {
+              "packager": "esp32",
+              "name": "openocd-esp32",
+              "version": "v0.11.0-esp32-20221026"
+            },
+            {
+              "packager": "esp32",
+              "name": "esptool_py",
+              "version": "4.5.1"
+            },
+            {
+              "packager": "esp32",
+              "name": "mkspiffs",
+              "version": "0.2.3"
+            },
+            {
+              "packager": "esp32",
+              "name": "mklittlefs",
+              "version": "3.0.0-gnu12-dc7f933"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
