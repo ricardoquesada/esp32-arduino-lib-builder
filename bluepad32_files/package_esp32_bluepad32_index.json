@@ -12,7 +12,7 @@
         {
           "name": "esp32_bluepad32",
           "architecture": "esp32",
-          "version": "2.0.7",
+          "version": "3.7.0-2.0.7",
           "category": "Contributed",
           "url": "https://gitlab.com/ricardoquesada/bluepad32/uploads/9b79b1b9d3249782b9d08693f390ce94/bluepad32-arduino-v3.7.0.zip",
           "archiveFileName": "esp32-bluepad32-3.7.0.zip",
