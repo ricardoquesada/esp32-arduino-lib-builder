@@ -16,10 +16,10 @@
           "category": "Contributed",
           "url": "https://gitlab.com/ricardoquesada/bluepad32/uploads/9b79b1b9d3249782b9d08693f390ce94/bluepad32-arduino-v3.7.0.zip",
           "archiveFileName": "esp32-bluepad32-3.7.0.zip",
-          "checksum": "SHA-256:b5a7a54fca36501d1108413310ec50ae2df655c14c3881325903cde2c7ae5f80",
-          "size": "278966011",
+          "checksum": "SHA-256:c6852d242230ee3b0ef9a736e09c25bab4af5d546d4019bfc7ae92c24d915244",
+          "size": "201498606",
           "help": {
-            "online": ""
+            "online": "https://discord.gg/r5aMn6Cw5q"
           },
           "boards": [
             {
