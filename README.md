@@ -24,7 +24,7 @@ Build it
 
 ```sh
 # All targets. esp32-s2 already removed from the supported boards
-./build.sh -c ~/.arduino15/packages/esp32-bluepad32 -s
+./build.sh -s
 ```
 
 Update:
