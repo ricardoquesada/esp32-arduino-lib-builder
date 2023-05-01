@@ -39,6 +39,7 @@ Update:
 1. Download the .zip
 2. Unzip it in ~/Arduino/hardware/retro.moe/...
 3. rename it to esp32-bluepad32
+4. create `package` folder: `mkdir esp32-bluepad32/package`
 
 And repeat previous steps.
 
