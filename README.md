@@ -46,5 +46,12 @@ And repeat previous steps.
 ### Release
 
 1. Copy `bluepad32_files/boards.txt` and `bluepad32_files/platform.txt` to `~/Arduino/hardware/retro.moe/esp32-bluepad32`
-2. Upload .zip to https://github.com/ricardoquesada/esp32-arduino-lib-builder
-3. Update `bluepad32_files/package_esp32_bluepad32_index.json` accordingly
+2. Copy `bluepad32_files/libraries/` to `~/Arduino/hardware/retro.moe/esp32-bluepad32/libraries/`
+3. Upload .zip to https://github.com/ricardoquesada/esp32-arduino-lib-builder
+4. Update `bluepad32_files/package_esp32_bluepad32_index.json` accordingly
+
+
+```sh
+cp bluepad32_files/boards.txt bluepad32_files/platform.txt ~/Arduino/hardware/retro.moe/esp32-bluepad32
+cp -r bluepad32_files/libraries/* ~/Arduino/hardware/retro.moe/esp32-bluepad32/libraries/
+```
