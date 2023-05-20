@@ -17,6 +17,7 @@ cd esp32-arduino-lib-builder
 Copy Bluepad32 componetns.
 
 ```sh
+cd components
 cp -r ~/esp-idf-arduino-bluepad32-template/components/* .
 ```
 
