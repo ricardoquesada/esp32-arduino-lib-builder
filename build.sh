@@ -58,10 +58,10 @@ while getopts ":A:I:i:c:t:b:sd" opt; do
             ;;
         b )
             b=$OPTARG
-            if [ "$b" != "build" ] && 
-               [ "$b" != "menuconfig" ] && 
-               [ "$b" != "idf_libs" ] && 
-               [ "$b" != "copy_bootloader" ] && 
+            if [ "$b" != "build" ] &&
+               [ "$b" != "menuconfig" ] &&
+               [ "$b" != "idf_libs" ] &&
+               [ "$b" != "copy_bootloader" ] &&
                [ "$b" != "mem_variant" ]; then
                 print_help
             fi
@@ -99,7 +99,7 @@ if [ "$BUILD_TYPE" != "all" ]; then
         print_help
     fi
     configs="configs/defconfig.common;configs/defconfig.$TARGET"
-    
+
     # Target Features Configs
     for target_json in `jq -c '.targets[]' configs/builds.json`; do
         target=$(echo "$target_json" | jq -c '.target' | tr -d '"')
