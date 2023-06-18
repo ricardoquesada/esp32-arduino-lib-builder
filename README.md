@@ -42,14 +42,15 @@ Update:
 3. rename it to esp32-bluepad32
 4. create `package` folder: `mkdir esp32-bluepad32/package`
 
-And repeat previous steps.
+And repeat the previous steps.
 
 ### Release
 
 1. Copy `bluepad32_files/boards.txt` and `bluepad32_files/platform.txt` to `~/Arduino/hardware/retro.moe/esp32-bluepad32`
 2. Copy `bluepad32_files/libraries/` to `~/Arduino/hardware/retro.moe/esp32-bluepad32/libraries/`
 3. Upload .zip to https://github.com/ricardoquesada/esp32-arduino-lib-builder
-4. Update `bluepad32_files/package_esp32_bluepad32_index.json` accordingly
+4. Update `bluepad32_files/package_esp32_bluepad32_index.json` accordingly.
+   Update `package_esp32_bluepad32_index.json` in `master` branch as well.
 
 
 ```sh
