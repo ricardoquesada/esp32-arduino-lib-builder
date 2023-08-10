@@ -14,7 +14,7 @@ cd esp32-arduino-lib-builder
 
 ### Build for Bluepad32
 
-Copy Bluepad32 componetns.
+Copy Bluepad32 components.
 
 ```sh
 cd components
@@ -37,10 +37,12 @@ Update:
 
 #### When ESP32 releases a new version
 
-1. Download the .zip
+1. Download the .zip from: https://github.com/espressif/arduino-esp32/releases
 2. Unzip it in ~/Arduino/hardware/retro.moe/...
 3. rename it to esp32-bluepad32
 4. create `package` folder: `mkdir esp32-bluepad32/package`
+5. copy `boards.txt` from the downloaded file to `bluepad32_files`
+6. Manually remove all esp32s2 boards from `bluepad32_files/boards.txt`
 
 And repeat the previous steps.
 
@@ -54,6 +56,6 @@ And repeat the previous steps.
 
 
 ```sh
-cp bluepad32_files/boards.txt bluepad32_files/platform.txt ~/Arduino/hardware/retro.moe/esp32-bluepad32
+cp bluepad32_files/boards.txt bluepad32_files/platform.txt bluepad32_files/package.json ~/Arduino/hardware/retro.moe/esp32-bluepad32
 cp -r bluepad32_files/libraries/* ~/Arduino/hardware/retro.moe/esp32-bluepad32/libraries/
 ```
