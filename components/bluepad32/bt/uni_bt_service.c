@@ -78,7 +78,7 @@ static int att_write_callback(hci_con_handle_t con_handle,
                               uint16_t offset,
                               uint8_t* buffer,
                               uint16_t buffer_size);
-static uint16_t att_read_callback(hci_con_handle_t connection_handle,
+static uint16_t att_read_callback(hci_con_handle_t conn_handle,
                                   uint16_t att_handle,
                                   uint16_t offset,
                                   uint8_t* buffer,
@@ -252,12 +252,12 @@ static int att_write_callback(hci_con_handle_t con_handle,
     return 0;
 }
 
-static uint16_t att_read_callback(hci_con_handle_t connection_handle,
+static uint16_t att_read_callback(hci_con_handle_t conn_handle,
                                   uint16_t att_handle,
                                   uint16_t offset,
                                   uint8_t* buffer,
                                   uint16_t buffer_size) {
-    ARG_UNUSED(connection_handle);
+    ARG_UNUSED(conn_handle);
 
     switch (att_handle) {
         case ATT_CHARACTERISTIC_4627C4A4_AC01_46B9_B688_AFC5C1BF7F63_01_VALUE_HANDLE:
@@ -361,8 +361,8 @@ static client_connection_t* connection_for_conn_handle(hci_con_handle_t conn_han
 }
 
 static void att_packet_handler(uint8_t packet_type, uint16_t channel, uint8_t* packet, uint16_t size) {
-    UNUSED(channel);
-    UNUSED(size);
+    ARG_UNUSED(channel);
+    ARG_UNUSED(size);
 
     client_connection_t* ctx;
     int mtu;
@@ -398,10 +398,25 @@ static void att_packet_handler(uint8_t packet_type, uint16_t channel, uint8_t* p
             memset(ctx, 0, sizeof(*ctx));
             ctx->connection_handle = HCI_CON_HANDLE_INVALID;
             break;
+        case HCI_EVENT_LE_META:
+            switch (hci_event_le_meta_get_subevent_code(packet)) {
+                case HCI_SUBEVENT_LE_CONNECTION_COMPLETE:
+                    // Deprecated. Replaced by ATT_EVENT_CONNECTED
+                    break;
+                default:
+                    logi("Unsupported HCI_EVENT_LE_META: %#x\n", hci_event_le_meta_get_subevent_code(packet));
+                    break;
+            }
+            break;
         default:
             logi("BLE Service: Unsupported ATT_EVENT: %#x\n", hci_event_packet_get_type(packet));
             break;
     }
+}
+
+void uni_bt_service_deinit(void) {
+    att_server_deinit();
+    gap_advertisements_enable(false);
 }
 
 /*
@@ -439,8 +454,17 @@ void uni_bt_service_init(void) {
 bool uni_bt_service_is_enabled() {
     return service_enabled;
 }
+
 void uni_bt_service_set_enabled(bool enabled) {
+    if (enabled == service_enabled)
+        return;
+
     service_enabled = enabled;
+
+    if (service_enabled)
+        uni_bt_service_init();
+    else
+        uni_bt_service_deinit();
 }
 
 void uni_bt_service_on_device_ready(const uni_hid_device_t* d) {

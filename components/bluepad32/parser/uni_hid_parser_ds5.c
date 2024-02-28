@@ -35,6 +35,8 @@ enum {
     // Values for flag 0
     DS5_FLAG0_COMPATIBLE_VIBRATION = BIT(0),
     DS5_FLAG0_HAPTICS_SELECT = BIT(1),
+    DS5_FLAG0_FFB_RIGHT = BIT(2),
+    DS5_FLAG0_FFB_LEFT = BIT(3),
 
     // Values for flag 1
     DS5_FLAG1_LIGHTBAR = BIT(2),
@@ -102,7 +104,9 @@ typedef struct __attribute((packed)) {
     uint8_t mute_button_led;
 
     uint8_t power_save_control;
-    uint8_t reserved2[28];
+    uint8_t right_trigger_ffb[11];
+    uint8_t left_trigger_ffb[11];
+    uint8_t reserved2[6];
 
     /* LEDs and lightbar */
     uint8_t valid_flag2;
@@ -194,6 +198,121 @@ static void ds5_request_firmware_version_report(uni_hid_device_t* d);
 static void ds5_request_calibration_report(uni_hid_device_t* d);
 static void ds5_set_rumble_off(btstack_timer_source_t* ts);
 static void ds5_parse_mouse(uni_hid_device_t* d, const uint8_t* report, uint16_t len);
+
+/******* Dualsense(DS5) Adaptive Trigger Effects - Start *******/
+// Built with help of https://gist.github.com/Nielk1/6d54cc2c00d2201ccb8c2720ad7538db, licensed under MIT License
+
+// Switches trigger effect off
+void ds5_generate_trigger_effect_off(uint8_t out_effect[11]) {
+    out_effect[0] = 0x05;
+
+    for (uint8_t i = 1; i < 11; i++)
+        out_effect[i] = 0x0;
+}
+
+// position: should between 0 and 9, inclusive
+// strength: should between 0 and 8, inclusive
+void ds5_generate_trigger_effect_feedback(uint8_t position, uint8_t strength, uint8_t out_effect[11]) {
+    if (position > 9) {
+        loge("DS5: Invalid position %d, expected =< 9\n", position);
+        return;
+    }
+
+    if (strength > 8) {
+        loge("DS5: Invalid strength %d, expected =< 8\n", strength);
+        return;
+    }
+
+    out_effect[0] = 0x21;
+
+    uint8_t force_value = (strength - 1) & 0x07;  // only 3 bits used
+    uint32_t force_zones = 0;
+    uint16_t active_zones = 0;
+
+    for (uint8_t i = position; i <= 9; i++) {
+        force_zones |= force_value << (i * 3);  // each force value occupies 3 bits x 10 zones
+        active_zones |= (uint16_t)(1 << i);     // zone mask
+    }
+
+    out_effect[1] = (active_zones >> 0) & 0xFF;
+    out_effect[2] = (active_zones >> 8) & 0xFF;
+    out_effect[3] = (force_zones >> 0) & 0xFF;
+    out_effect[4] = (force_zones >> 8) & 0xFF;
+    out_effect[5] = (force_zones >> 16) & 0xFF;
+    out_effect[6] = (force_zones >> 24) & 0xFF;
+    out_effect[7] = out_effect[8] = out_effect[9] = out_effect[10] = 0x00;
+}
+
+// start_position: should be between 2 and 7, inclusive
+// end_position: should be between start_position + 1 and 8, inclusive
+// strength: should be between 0 and 8, inclusive
+void ds5_generate_trigger_effect_weapon(uint8_t start_position,
+                                        uint8_t end_position,
+                                        uint8_t strength,
+                                        uint8_t out_effect[11]) {
+    if (start_position < 2 || start_position > 7) {
+        loge("DS5: Invalid start_position %d, expected 2 <= start_position <= 7\n", start_position);
+        return;
+    }
+    if (end_position <= start_position || end_position > 8) {
+        loge("DS5: Invalid end_position %d, expected start_position < end_position <= 8\n", end_position);
+        return;
+    }
+    if (strength > 8) {
+        loge("DS5: Invalid strength %d, expected <= 8\n", end_position);
+        return;
+    }
+
+    out_effect[0] = 0x25;
+
+    uint16_t start_and_stop_zones = (1 << start_position) | (1 << end_position);
+
+    out_effect[1] = (start_and_stop_zones >> 0) & 0xFF;
+    out_effect[2] = (start_and_stop_zones >> 8) & 0xFF;
+    out_effect[3] = strength - 1;
+    out_effect[4] = out_effect[5] = out_effect[6] = out_effect[7] = out_effect[8] = out_effect[9] = out_effect[10] =
+        0x00;
+}
+
+// Warning! Not to be confused with gamepad rumble feature. This is an adaptive trigger effect!
+// position: should be between 0 and 9, inclusive
+// amplitude: should be between 0 and 8, inclusive
+// frequency: should be in Hz
+void ds5_generate_trigger_effect_vibration(uint8_t position,
+                                           uint8_t amplitude,
+                                           uint8_t frequency,
+                                           uint8_t out_effect[11]) {
+    if (position > 9) {
+        loge("DS5: Invalid position %d, expected <= 9\n", position);
+        return;
+    }
+    if (amplitude > 8) {
+        loge("DS5: Invalid amplitude %d, expected <= 8\n", position);
+        return;
+    }
+
+    out_effect[0] = 0x26;
+
+    uint8_t strength_value = (amplitude - 1) & 0x07;  // only 3 bits used
+    uint32_t amplitude_zones = 0;
+    uint16_t active_zones = 0;
+
+    for (uint8_t i = position; i <= 9; i++) {
+        amplitude_zones |= (uint32_t)strength_value << (i * 3);  // each force value occupies 3 bits x 10 zones
+        active_zones |= (uint16_t)(1 << i);                      // zone mask
+    }
+
+    out_effect[1] = (active_zones >> 0) & 0xFF;
+    out_effect[2] = (active_zones >> 8) & 0xFF;
+    out_effect[3] = (amplitude_zones >> 0) & 0xFF;
+    out_effect[4] = (amplitude_zones >> 8) & 0xFF;
+    out_effect[5] = (amplitude_zones >> 16) & 0xFF;
+    out_effect[6] = (amplitude_zones >> 24) & 0xFF;
+    out_effect[7] = out_effect[8] = 0x00;
+    out_effect[9] = frequency;
+    out_effect[10] = 0x00;
+}
+/******* Dualsense(DS5) Adaptive Trigger Effects - End *******/
 
 void uni_hid_parser_ds5_init_report(uni_hid_device_t* d) {
     uni_controller_t* ctl = &d->controller;
@@ -481,6 +600,22 @@ void uni_hid_parser_ds5_set_lightbar_color(struct uni_hid_device_s* d, uint8_t r
         .valid_flag1 = DS5_FLAG1_LIGHTBAR,
     };
 
+    ds5_send_output_report(d, &out);
+}
+
+void uni_hid_parser_ds5_set_trigger_effect(struct uni_hid_device_s* d,
+                                           uni_trigger_effect_type_t trigger_type,
+                                           const uint8_t trigger_effect[11]) {
+    ds5_output_report_t out = {.valid_flag0 = (trigger_type == UNI_TRIGGER_EFFECT_TYPE_LEFT) ? DS5_FLAG0_FFB_LEFT
+                                                                                             : DS5_FLAG0_FFB_RIGHT};
+
+    if (trigger_type == UNI_TRIGGER_EFFECT_TYPE_LEFT) {
+        memcpy(out.left_trigger_ffb, trigger_effect, sizeof(*trigger_effect) * 11);
+    } else {
+        memcpy(out.right_trigger_ffb, trigger_effect, sizeof(*trigger_effect) * 11);
+    }
+
+    // logi("Has set valid flag %d, also, %d, and, %d", out.valid_flag0, out.left_trigger_ffb, out.right_trigger_ffb);
     ds5_send_output_report(d, &out);
 }
 

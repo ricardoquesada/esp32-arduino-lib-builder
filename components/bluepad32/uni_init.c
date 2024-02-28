@@ -14,18 +14,14 @@
 #include "uni_hid_device.h"
 #include "uni_log.h"
 #include "uni_property.h"
-#include "uni_uart.h"
 #include "uni_version.h"
 #include "uni_virtual_device.h"
 
 int uni_init(int argc, const char** argv) {
-    // UART should be initialized early on in case it is needed to disable it.
-    uni_uart_init();
-
     // Disable stdout buffering
     setbuf(stdout, NULL);
 
-    logi("Bluepad32 (C) 2016-2023 Ricardo Quesada and contributors.\n");
+    logi("Bluepad32 (C) 2016-2024 Ricardo Quesada and contributors.\n");
     logi("Version: v" UNI_VERSION "\n");
 
     // Honoring BTstack license
