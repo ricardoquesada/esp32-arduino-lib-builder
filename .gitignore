@@ -19,3 +19,6 @@ sdkconfig
 sdkconfig.old
 version.txt
 dependencies.lock
+
+# Object files
+*.o

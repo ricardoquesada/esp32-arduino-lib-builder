@@ -17,7 +17,11 @@
 //
 // Autostart
 //
+#if CONFIG_AUTOSTART_ARDUINO
+void initBluepad32() {
+#else
 int app_main(void) {
+#endif  // !CONFIG_AUTOSTART_ARDUINO
     // hci_dump_open(NULL, HCI_DUMP_STDOUT);
 
     // Configure BTstack for ESP32 VHCI Controller
@@ -33,5 +37,7 @@ int app_main(void) {
 
     // Does not return.
     btstack_run_loop_execute();
+#if !CONFIG_AUTOSTART_ARDUINO
     return 0;
+#endif  // !CONFIG_AUTOSTART_ARDUINO
 }
