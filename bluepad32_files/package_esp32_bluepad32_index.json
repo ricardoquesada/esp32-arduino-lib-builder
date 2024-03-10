@@ -14,10 +14,10 @@
           "architecture": "esp32",
           "version": "4.0-beta.2",
           "category": "Contributed",
-          "url": "https://github.com/ricardoquesada/esp32-arduino-lib-builder/releases/download/4.0-beta.1/esp32-bluepad32-4.0-beta.2.zip",
+          "url": "https://github.com/ricardoquesada/esp32-arduino-lib-builder/releases/download/4.0-beta.2/esp32-bluepad32-4.0-beta.2.zip",
           "archiveFileName": "esp32-bluepad32-4.0-beta.2.zip",
-          "checksum": "SHA-256:3a3a9f59feb162490928a445bd28a6f1aea7381f1078bc3e3ea20f5c472b1dfa",
-          "size": "197534696",
+          "checksum": "SHA-256:70ec2baf8351fed36007b9a16a52e24575a6d32b2e84aed7fa5b9286a2ae8628",
+          "size": "197277043",
           "help": {
             "online": "https://discord.gg/r5aMn6Cw5q"
           },
