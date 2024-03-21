@@ -131,8 +131,8 @@ void processGamepad(ControllerPtr ctl) {
         // It is possible to set it by calling:
         // Some controllers have two motors: "strong motor", "weak motor".
         // It is possible to control them independently.
-        ctl->playDualRumble(0 /* delayedStartMs */, 100 /* durationMs */, 0x80 /* weakMagnitude */,
-                            0 /* strongMagnitude */);
+        ctl->playDualRumble(0 /* delayedStartMs */, 250 /* durationMs */, 0x80 /* weakMagnitude */,
+                            0x40 /* strongMagnitude */);
     }
 
     // Another way to query controller data is by getting the buttons() function.
