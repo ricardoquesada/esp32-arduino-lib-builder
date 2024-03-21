@@ -29,6 +29,7 @@
 #include "cmd_system.h"
 #include "controller/uni_balance_board.h"
 #include "controller/uni_controller.h"
+#include "controller/uni_controller_type.h"
 #include "controller/uni_gamepad.h"
 #include "controller/uni_keyboard.h"
 #include "hid_usage.h"
@@ -44,7 +45,6 @@
 #include "uni_config.h"
 #include "uni_gpio.h"
 #include "uni_hid_device.h"
-#include "uni_hid_device_vendors.h"
 #include "uni_joystick.h"
 #include "uni_log.h"
 #include "uni_mouse_quadrature.h"
@@ -1189,8 +1189,9 @@ static void set_gamepad_seat(uni_hid_device_t* d, uni_gamepad_seat_t seat) {
         lightbar_or_led_set = true;
     }
 
-    if (!lightbar_or_led_set && d->report_parser.set_rumble != NULL) {
-        d->report_parser.set_rumble(d, 0x80 /* value */, 0x04 /* duration */);
+    if (!lightbar_or_led_set && d->report_parser.play_dual_rumble != NULL) {
+        d->report_parser.play_dual_rumble(d, 0 /* delayed start ms */, 100 /* duration ms */, 0x00 /* weak magnitude */,
+                                          0xa0 /* strong magnitude */);
     }
 }
 
@@ -1203,7 +1204,7 @@ static void joy_update_port(const uni_joystick_t* joy, const gpio_num_t* gpios) 
     uni_gpio_set_level(gpios[UNI_PLATFORM_UNIJOYSTICLE_JOY_LEFT], joy->left);
     uni_gpio_set_level(gpios[UNI_PLATFORM_UNIJOYSTICLE_JOY_RIGHT], joy->right);
 
-    // Only update fire if auto-fire is off. Otherwise it will conflict.
+    // Only update fire if auto-fire is off. Otherwise, it will conflict.
     if (!joy->auto_fire) {
         uni_gpio_set_level(gpios[UNI_PLATFORM_UNIJOYSTICLE_JOY_FIRE], joy->fire);
     }

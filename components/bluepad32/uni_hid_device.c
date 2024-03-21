@@ -13,6 +13,7 @@
 #include "bt/uni_bt_defines.h"
 #include "bt/uni_bt_le.h"
 #include "bt/uni_bt_service.h"
+#include "controller/uni_controller_type.h"
 #include "parser/uni_hid_parser_8bitdo.h"
 #include "parser/uni_hid_parser_android.h"
 #include "parser/uni_hid_parser_atari.h"
@@ -27,6 +28,7 @@
 #include "parser/uni_hid_parser_ouya.h"
 #include "parser/uni_hid_parser_psmove.h"
 #include "parser/uni_hid_parser_smarttvremote.h"
+#include "parser/uni_hid_parser_stadia.h"
 #include "parser/uni_hid_parser_steam.h"
 #include "parser/uni_hid_parser_switch.h"
 #include "parser/uni_hid_parser_wii.h"
@@ -34,7 +36,6 @@
 #include "platform/uni_platform.h"
 #include "uni_common.h"
 #include "uni_config.h"
-#include "uni_hid_device_vendors.h"
 #include "uni_log.h"
 #include "uni_virtual_device.h"
 
@@ -88,7 +89,8 @@ uni_hid_device_t* uni_hid_device_create_virtual(uni_hid_device_t* parent) {
         if (bd_addr_cmp(g_devices[i].conn.btaddr, zero_addr) == 0) {
             logi("Creating virtual device (idx=%d)\n", i);
 
-            memset(&g_devices[i], 0, sizeof(g_devices[i]));
+            // Don't memset the device, it is already "clean".
+            // memsetting could break the initialization.
 
             // Both parent and child share the same address.
             // Seems safe to copy the address. "get_instance_by_address" skips
@@ -554,7 +556,7 @@ void uni_hid_device_guess_controller_type_from_pid_vid(uni_hid_device_t* d) {
         return;
     }
     // Try to guess it from Vendor/Product id.
-    uni_controller_type_t type = guess_controller_type(d->vendor_id, d->product_id);
+    uni_controller_type_t type = uni_guess_controller_type(d->vendor_id, d->product_id);
 
     // If it fails, try to guess it from COD
     if (type == CONTROLLER_TYPE_Unknown) {
@@ -594,7 +596,7 @@ void uni_hid_device_guess_controller_type_from_pid_vid(uni_hid_device_t* d) {
             d->report_parser.setup = uni_hid_parser_xboxone_setup;
             d->report_parser.init_report = uni_hid_parser_xboxone_init_report;
             d->report_parser.parse_usage = uni_hid_parser_xboxone_parse_usage;
-            d->report_parser.set_rumble = uni_hid_parser_xboxone_set_rumble;
+            d->report_parser.play_dual_rumble = uni_hid_parser_xboxone_play_dual_rumble;
             d->report_parser.device_dump = uni_hid_parser_xboxone_device_dump;
             logi("Device detected as Xbox Wireless: 0x%02x\n", type);
             break;
@@ -602,7 +604,13 @@ void uni_hid_device_guess_controller_type_from_pid_vid(uni_hid_device_t* d) {
             d->report_parser.init_report = uni_hid_parser_android_init_report;
             d->report_parser.parse_usage = uni_hid_parser_android_parse_usage;
             d->report_parser.set_player_leds = uni_hid_parser_android_set_player_leds;
-            logi("Device detected as Android: 0x%02x\n", type);
+            if (d->vendor_id == UNI_HID_PARSER_STADIA_VID && d->product_id == UNI_HID_PARSER_STADIA_PID) {
+                d->report_parser.setup = uni_hid_parser_stadia_setup;
+                d->report_parser.play_dual_rumble = uni_hid_parser_stadia_play_dual_rumble;
+                logi("Device detected as Stadia: 0x%02x\n", type);
+            } else {
+                logi("Device detected as Android: 0x%02x\n", type);
+            }
             break;
         case CONTROLLER_TYPE_NimbusController:
             d->report_parser.init_report = uni_hid_parser_nimbus_init_report;
@@ -620,7 +628,7 @@ void uni_hid_device_guess_controller_type_from_pid_vid(uni_hid_device_t* d) {
             d->report_parser.init_report = uni_hid_parser_psmove_init_report;
             d->report_parser.parse_input_report = uni_hid_parser_psmove_parse_input_report;
             d->report_parser.set_lightbar_color = uni_hid_parser_psmove_set_lightbar_color;
-            d->report_parser.set_rumble = uni_hid_parser_psmove_set_rumble;
+            d->report_parser.play_dual_rumble = uni_hid_parser_psmove_play_dual_rumble;
             logi("Device detected as PS Move: 0x%02x\n", type);
             break;
         case CONTROLLER_TYPE_PS3Controller:
@@ -628,7 +636,7 @@ void uni_hid_device_guess_controller_type_from_pid_vid(uni_hid_device_t* d) {
             d->report_parser.init_report = uni_hid_parser_ds3_init_report;
             d->report_parser.parse_input_report = uni_hid_parser_ds3_parse_input_report;
             d->report_parser.set_player_leds = uni_hid_parser_ds3_set_player_leds;
-            d->report_parser.set_rumble = uni_hid_parser_ds3_set_rumble;
+            d->report_parser.play_dual_rumble = uni_hid_parser_ds3_play_dual_rumble;
             logi("Device detected as DualShock 3: 0x%02x\n", type);
             break;
         case CONTROLLER_TYPE_PS4Controller:
@@ -637,7 +645,7 @@ void uni_hid_device_guess_controller_type_from_pid_vid(uni_hid_device_t* d) {
             d->report_parser.parse_input_report = uni_hid_parser_ds4_parse_input_report;
             d->report_parser.parse_feature_report = uni_hid_parser_ds4_parse_feature_report;
             d->report_parser.set_lightbar_color = uni_hid_parser_ds4_set_lightbar_color;
-            d->report_parser.set_rumble = uni_hid_parser_ds4_set_rumble;
+            d->report_parser.play_dual_rumble = uni_hid_parser_ds4_play_dual_rumble;
             d->report_parser.device_dump = uni_hid_parser_ds4_device_dump;
             logi("Device detected as DualShock 4: 0x%02x\n", type);
             break;
@@ -648,7 +656,7 @@ void uni_hid_device_guess_controller_type_from_pid_vid(uni_hid_device_t* d) {
             d->report_parser.parse_feature_report = uni_hid_parser_ds5_parse_feature_report;
             d->report_parser.set_player_leds = uni_hid_parser_ds5_set_player_leds;
             d->report_parser.set_lightbar_color = uni_hid_parser_ds5_set_lightbar_color;
-            d->report_parser.set_rumble = uni_hid_parser_ds5_set_rumble;
+            d->report_parser.play_dual_rumble = uni_hid_parser_ds5_play_dual_rumble;
             d->report_parser.device_dump = uni_hid_parser_ds5_device_dump;
             logi("Device detected as DualSense: 0x%02x\n", type);
             break;
@@ -667,7 +675,7 @@ void uni_hid_device_guess_controller_type_from_pid_vid(uni_hid_device_t* d) {
             d->report_parser.init_report = uni_hid_parser_wii_init_report;
             d->report_parser.parse_input_report = uni_hid_parser_wii_parse_input_report;
             d->report_parser.set_player_leds = uni_hid_parser_wii_set_player_leds;
-            d->report_parser.set_rumble = uni_hid_parser_wii_set_rumble;
+            d->report_parser.play_dual_rumble = uni_hid_parser_wii_play_dual_rumble;
             d->report_parser.device_dump = uni_hid_parser_wii_device_dump;
             logi("Device detected as Wii controller: 0x%02x\n", type);
             break;
@@ -678,7 +686,7 @@ void uni_hid_device_guess_controller_type_from_pid_vid(uni_hid_device_t* d) {
             d->report_parser.init_report = uni_hid_parser_switch_init_report;
             d->report_parser.parse_input_report = uni_hid_parser_switch_parse_input_report;
             d->report_parser.set_player_leds = uni_hid_parser_switch_set_player_leds;
-            d->report_parser.set_rumble = uni_hid_parser_switch_set_rumble;
+            d->report_parser.play_dual_rumble = uni_hid_parser_switch_play_dual_rumble;
             d->report_parser.device_dump = uni_hid_parser_switch_device_dump;
             logi("Device detected as Nintendo Switch Pro controller: 0x%02x\n", type);
             break;
@@ -780,8 +788,7 @@ void uni_hid_device_send_report(uni_hid_device_t* d, uint16_t cid, const uint8_t
             loge("ERROR: circular buffer full. Cannot queue report\n");
         }
     }
-    // Even, if it can send the report, trigger a "can send now event" in case
-    // a report was queued.
+    // Even, if it can send the report, trigger a "can send now event" in case a report was queued.
     // TODO: Is this really needed?
     l2cap_request_can_send_now_event(cid);
 }
