@@ -1,5 +1,5 @@
 name=ESP32 Arduino + Bluepad32
-version=3.9.0
+version=4.0.1
 
 tools.xtensa-esp32-elf-gcc.path={runtime.tools.xtensa-esp32-elf-gcc.path}
 tools.xtensa-esp32s2-elf-gcc.path={runtime.tools.xtensa-esp32s2-elf-gcc.path}
