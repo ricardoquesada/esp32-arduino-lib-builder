@@ -13,7 +13,7 @@ fi
 TARGET="esp32"
 BUILD_TYPE="build"
 SKIP_ENV=0
-COPY_OUT=0
+COPY_OUT=1
 DEPLOY_OUT=0
 export AR_BRANCH="2.0.17" #defaulting this to a known good version, can still be overridden
 export IDF_BRANCH="release/v4.4" #defaulting this to a known good version, can still be overridden
@@ -205,6 +205,18 @@ if [ "$BUILD_TYPE" = "all" ]; then
     ./tools/archive-build.sh
     if [ $? -ne 0 ]; then exit 1; fi
 fi
+
+# set up arduino build
+# BOYD - move this to a script in tools
+mkdir -p ~/Arduino/hardware/retro.moe
+rm -rf ~/Arduino/hardware/retro.moe/*
+wget https://github.com/espressif/arduino-esp32/releases/download/$AR_BRANCH/esp32-$AR_BRANCH.zip
+unzip esp32-$AR_BRANCH.zip -d ~/Arduino/hardware/retro.moe/
+mv ~/Arduino/hardware/retro.moe/esp32-$AR_BRANCH ~/Arduino/hardware/retro.moe/esp32-bluepad32
+mkdir ~/Arduino/hardware/retro.moe/esp32-bluepad/package
+cp bluepad32_files/boards.txt bluepad32_files/platform.txt bluepad32_files/package.json ~/Arduino/hardware/retro.moe/esp32-bluepad32
+cp -r bluepad32_files/libraries/* ~/Arduino/hardware/retro.moe/esp32-bluepad32/libraries/
+
 
 # copy everything to arduino-esp32 installation
 if [ $COPY_OUT -eq 1 ] && [ -d "$ESP32_ARDUINO" ]; then
