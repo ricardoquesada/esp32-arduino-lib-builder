@@ -32,6 +32,10 @@ cp -rf bluepad32-repo/components/* "$AR_COMPS/"
 echo "Updating ESP32 Arduino..."
 if [ ! -d "$AR_COMPS/arduino" ]; then
 	git clone $AR_REPO_URL "$AR_COMPS/arduino"
+  if [ "$AR_BRANCH" ]; then
+    git -C "$AR_COMPS/arduino" checkout "$AR_BRANCH" && \
+    git -C "$AR_COMPS/arduino" fetch
+  fi
 fi
 
 if [ -z $AR_BRANCH ]; then
@@ -59,11 +63,6 @@ if [ -z $AR_BRANCH ]; then
 			fi
 		fi
 	fi
-fi
-
-if [ "$AR_BRANCH" ]; then
-	git -C "$AR_COMPS/arduino" checkout "$AR_BRANCH" && \
-	git -C "$AR_COMPS/arduino" fetch
 fi
 if [ $? -ne 0 ]; then exit 1; fi
 
