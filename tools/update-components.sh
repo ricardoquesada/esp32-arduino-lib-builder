@@ -63,8 +63,7 @@ fi
 
 if [ "$AR_BRANCH" ]; then
 	git -C "$AR_COMPS/arduino" checkout "$AR_BRANCH" && \
-	git -C "$AR_COMPS/arduino" fetch && \
-	git -C "$AR_COMPS/arduino" pull --ff-only
+	git -C "$AR_COMPS/arduino" fetch
 fi
 if [ $? -ne 0 ]; then exit 1; fi
 
