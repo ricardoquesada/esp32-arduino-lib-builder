@@ -1,13 +1,16 @@
 {
   "packages": [
     {
-      "name": "esp32-phasedock",
+      "name": "PhaseDock Robot Arm",
       "maintainer": "Mike Boyd",
       "websiteURL": "https://phasedock.com",
       "email": "boyd@phasedock.com",
+      "help": {
+        "online": "https://discord.gg/r5aMn6Cw5q"
+      },
       "platforms": [
         {
-          "name": "esp32_phasedock",
+          "name": "phasedock_esp32_robotarm",
           "architecture": "esp32",
           "version": "1.0.0",
           "category": "Contributed",
