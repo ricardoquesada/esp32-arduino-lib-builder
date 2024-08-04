@@ -214,7 +214,8 @@ wget https://github.com/espressif/arduino-esp32/releases/download/$AR_BRANCH/esp
 unzip esp32-$AR_BRANCH.zip -d ~/Arduino/hardware/retro.moe/
 mv ~/Arduino/hardware/retro.moe/esp32-$AR_BRANCH ~/Arduino/hardware/retro.moe/esp32-bluepad32
 mkdir ~/Arduino/hardware/retro.moe/esp32-bluepad/package
-cp bluepad32_files/boards.txt bluepad32_files/platform.txt bluepad32_files/package.json ~/Arduino/hardware/retro.moe/esp32-bluepad32
+cp bluepad32_files/platform.txt bluepad32_files/package.json ~/Arduino/hardware/retro.moe/esp32-bluepad32
+cat bluepad32_files/boards.txt | grep -v esp32s2 > ~/Arduino/hardware/retro.moe/esp32-bluepad32/boards.txt
 cp -r bluepad32_files/libraries/* ~/Arduino/hardware/retro.moe/esp32-bluepad32/libraries/
 
 
