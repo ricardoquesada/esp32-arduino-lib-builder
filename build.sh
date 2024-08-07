@@ -11,7 +11,7 @@ if ! [ -x "$(command -v git)" ]; then
 fi
 
 TARGET="esp32"
-BUILD_TYPE="build"
+BUILD_TYPE="all"
 SKIP_ENV=0
 COPY_OUT=1
 DEPLOY_OUT=0
@@ -124,24 +124,6 @@ if [ "$BUILD_TYPE" != "all" ]; then
     rm -rf build sdkconfig
     idf.py -DIDF_TARGET="$TARGET" -DSDKCONFIG_DEFAULTS="$configs" $BUILD_TYPE
     if [ $? -ne 0 ]; then exit 1; fi
-    # set up arduino build
-    # BOYD - move this to a script in tools
-    mkdir -p ~/Arduino/hardware/retro.moe
-    rm -rf ~/Arduino/hardware/retro.moe/*
-    wget https://github.com/espressif/arduino-esp32/releases/download/$AR_BRANCH/esp32-$AR_BRANCH.zip
-    unzip esp32-$AR_BRANCH.zip -d ~/Arduino/hardware/retro.moe/
-    mv ~/Arduino/hardware/retro.moe/esp32-$AR_BRANCH ~/Arduino/hardware/retro.moe/esp32-bluepad32
-    mkdir ~/Arduino/hardware/retro.moe/esp32-bluepad/package
-
-    ./tools/copy-to-arduino.sh
-
-    cp bluepad32_files/platform.txt bluepad32_files/package.json ~/Arduino/hardware/retro.moe/esp32-bluepad32
-    cat bluepad32_files/boards.txt | grep -v esp32s2 > ~/Arduino/hardware/retro.moe/esp32-bluepad32/boards.txt
-    cp -r bluepad32_files/libraries/* ~/Arduino/hardware/retro.moe/esp32-bluepad32/libraries/
-    mv ~/Arduino/hardware/retro.moe/esp32-bluepad32 ~/Arduino/hardware/retro.moe/phasedock-esp32-robotarm-1.0.0
-    cd ~/Arduino/hardware/retro.moe
-    zip -r phasedock-esp32-robotarm-1.0.0.zip phasedock-esp32-robotarm-1.0.0
-    sha256sum phasedock-esp32-robotarm-1.0.0.zip > phasedock-esp32-robotarm-1.0.0.zip.checksum
     exit 0
 fi
 
@@ -235,3 +217,24 @@ fi
 if [ $DEPLOY_OUT -eq 1 ]; then
     ./tools/push-to-arduino.sh
 fi
+
+  # set up arduino build
+  # BOYD - move this to a script in tools
+  mkdir -p ~/Arduino/hardware/retro.moe
+  rm -rf ~/Arduino/hardware/retro.moe/*
+  wget https://github.com/espressif/arduino-esp32/releases/download/$AR_BRANCH/esp32-$AR_BRANCH.zip
+  unzip esp32-$AR_BRANCH.zip -d ~/Arduino/hardware/retro.moe/
+  mv ~/Arduino/hardware/retro.moe/esp32-$AR_BRANCH ~/Arduino/hardware/retro.moe/esp32-bluepad32
+  mkdir ~/Arduino/hardware/retro.moe/esp32-bluepad32/package
+
+  ./tools/copy-to-arduino.sh
+
+  cp bluepad32_files/platform.txt bluepad32_files/package.json ~/Arduino/hardware/retro.moe/esp32-bluepad32
+  cat bluepad32_files/boards.txt | grep -v esp32s2 > ~/Arduino/hardware/retro.moe/esp32-bluepad32/boards.txt
+  cp -r bluepad32_files/libraries/* ~/Arduino/hardware/retro.moe/esp32-bluepad32/libraries/
+  mv ~/Arduino/hardware/retro.moe/esp32-bluepad32 ~/Arduino/hardware/retro.moe/phasedock-esp32-robotarm-1.0.0
+  cd ~/Arduino/hardware/retro.moe
+  zip -r phasedock-esp32-robotarm-1.0.0.zip phasedock-esp32-robotarm-1.0.0
+  sha256sum phasedock-esp32-robotarm-1.0.0.zip > phasedock-esp32-robotarm-1.0.0.zip.checksum
+  echo " Size: " >> phasedock-esp32-robotarm-1.0.0.zip.checksum
+  ls -la phasedock-esp32-robotarm-1.0.0.zip | sed -e "s/^\([^ ]\+ \+\)\{4\}\([^ ]\+\).*/\2/g" >> phasedock-esp32-robotarm-1.0.0.zip.checksum
