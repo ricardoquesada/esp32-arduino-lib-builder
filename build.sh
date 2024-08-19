@@ -232,7 +232,8 @@ fi
   cp bluepad32_files/platform.txt bluepad32_files/package.json ~/Arduino/hardware/retro.moe/esp32-bluepad32
   cat bluepad32_files/boards.txt | grep -v esp32s2 > ~/Arduino/hardware/retro.moe/esp32-bluepad32/boards.txt
   cp -r bluepad32_files/libraries/* ~/Arduino/hardware/retro.moe/esp32-bluepad32/libraries/
-  cp -r components/arduino/tools/* ~/Arduino/hardware/retro.moe/esp32-bluepad32/tools/
+  cp -rn components/arduino/tools/sdk/esp32/include/* ~/Arduino/hardware/retro.moe/esp32-bluepad32/tools/sdk/esp32/include/
+  cp -rn components/arduino/tools/sdk/esp32/lib/* ~/Arduino/hardware/retro.moe/esp32-bluepad32/tools/sdk/esp32/lib/
   cp -r components/arduino/libraries/* ~/Arduino/hardware/retro.moe/esp32-bluepad32/libraries/
   mv ~/Arduino/hardware/retro.moe/esp32-bluepad32 ~/Arduino/hardware/retro.moe/phasedock-esp32-robotarm-1.0.0
   cd ~/Arduino/hardware/retro.moe
