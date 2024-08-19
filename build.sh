@@ -235,6 +235,7 @@ fi
   cp -rn components/arduino/tools/sdk/esp32/include/* ~/Arduino/hardware/retro.moe/esp32-bluepad32/tools/sdk/esp32/include/
   cp -rn components/arduino/tools/sdk/esp32/lib/* ~/Arduino/hardware/retro.moe/esp32-bluepad32/tools/sdk/esp32/lib/
   cp -r components/arduino/libraries/* ~/Arduino/hardware/retro.moe/esp32-bluepad32/libraries/
+  cp -r phasedock_files/libraries/* ~/Arduino/hardware/retro.moe/esp32-bluepad32/libraries/
   mv ~/Arduino/hardware/retro.moe/esp32-bluepad32 ~/Arduino/hardware/retro.moe/phasedock-esp32-robotarm-1.0.0
   cd ~/Arduino/hardware/retro.moe
   zip -r phasedock-esp32-robotarm-1.0.0.zip phasedock-esp32-robotarm-1.0.0
