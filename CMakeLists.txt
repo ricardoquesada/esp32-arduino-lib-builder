@@ -1,7 +1,7 @@
 # The following lines of boilerplate have to be in your project's
 # CMakeLists in this exact order for cmake to work correctly
 cmake_minimum_required(VERSION 3.5)
-
+#BOYD this didn't seem to be in 4.4, it might need to go
 set(ENV{BLUEPAD32_ARDUINO} TRUE)
 
 set(RMAKER_PATH ${CMAKE_SOURCE_DIR}/components/esp-rainmaker)
