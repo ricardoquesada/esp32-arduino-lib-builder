@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 if [ -z $IDF_PATH ]; then
 	export IDF_PATH="$PWD/esp-idf"
 fi
@@ -22,6 +21,32 @@ if [ -z $IDF_TARGET ]; then
 	else
 		IDF_TARGET="esp32"
 	fi
+fi
+
+# DEPENDENCY VERSIONS
+if [ -z $AR_BRANCH ]; then
+  export AR_BRANCH="2.0.17" #defaulting this to a known good version, can still be overridden
+fi
+if [ -z $IDF_BRANCH ]; then
+  export IDF_BRANCH="release/v4.4" #defaulting this to a known good version, can still be overridden
+fi
+if [ -z $BLUEPAD32_BRANCH ]; then
+  export BLUEPAD32_BRANCH="4.1.0" #defaulting this to a known good version, can still be overridden
+fi
+if [ -z $ESP_DL_VERSION ]; then
+  export ESP_DL_VERSION="0632d2447dd49067faabe9761d88fa292589d5d9" #defaulting this to a known good commit, can still be overridden
+fi
+if [ -z $ESP32_CAMERA_VERSION ]; then
+  export ESP32_CAMERA_VERSION="7aa37d4f22503fdac9ccd449e4678c4894c40055" #defaulting this to a known good version, can still be overridden
+fi
+if [ -z $ESP_LITTLEFS_VERSION ]; then
+  export ESP_LITTLEFS_VERSION="3e5e7a11b7f06515a1f93873b6fe5a9efe88338b" #defaulting this to a known good version, can still be overridden
+fi
+if [ -z $ESPRESSIF_DSP_VERSION ]; then
+  export ESPRESSIF_DSP_VERSION="b3841d696950b2591cd84c94a0494c724a9f322e" #defaulting this to a known good version, can still be overridden
+fi
+if [ -z $TINYUSB_VERSION ]; then
+  export TINYUSB_VERSION="4485bffd139086d3adc40b1b176a59567a0254fc" #defaulting this to a known good version, can still be overridden
 fi
 
 IDF_COMPS="$IDF_PATH/components"
@@ -48,21 +73,12 @@ AR_SDK="$AR_TOOLS/sdk/$IDF_TARGET"
 if [ -z $DIST_PATH ]; then
 	export DIST_PATH="$AR_ROOT/dist"
 fi
-
-# DEPENDENCY VERSIONS
+if [ -z $DIST_VERSION ]; then
+  export DIST_VERSION=`git branch --show-current | sed -e "s/^\(.*\/\)*v\?//g"`
+fi
 if [ -z $DIST_NAME ]; then
-	export DIST_NAME="phasedock-esp32-robotarm-1.0.0"
+  export DIST_NAME="phasedock-esp32-robotarm-$DIST_VERSION"
 fi
-if [ -z $AR_BRANCH ]; then
-  export AR_BRANCH="2.0.17" #defaulting this to a known good version, can still be overridden
-fi
-if [ -z $IDF_BRANCH ]; then
-  export IDF_BRANCH="release/v4.4" #defaulting this to a known good version, can still be overridden
-fi
-if [ -z $BLUEPAD32_BRANCH ]; then
-  export BLUEPAD32_BRANCH="4.1.0" #defaulting this to a known good version, can still be overridden
-fi
-
 
 function get_os(){
   	OSBITS=`uname -m`
