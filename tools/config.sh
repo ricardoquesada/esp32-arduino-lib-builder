@@ -48,9 +48,21 @@ AR_SDK="$AR_TOOLS/sdk/$IDF_TARGET"
 if [ -z $DIST_PATH ]; then
 	export DIST_PATH="$AR_ROOT/dist"
 fi
+
+# DEPENDENCY VERSIONS
 if [ -z $DIST_NAME ]; then
 	export DIST_NAME="phasedock-esp32-robotarm-1.0.0"
 fi
+if [ -z $AR_BRANCH ]; then
+  export AR_BRANCH="2.0.17" #defaulting this to a known good version, can still be overridden
+fi
+if [ -z $IDF_BRANCH ]; then
+  export IDF_BRANCH="release/v4.4" #defaulting this to a known good version, can still be overridden
+fi
+if [ -z $BLUEPAD32_BRANCH ]; then
+  export BLUEPAD32_BRANCH="4.1.0" #defaulting this to a known good version, can still be overridden
+fi
+
 
 function get_os(){
   	OSBITS=`uname -m`
