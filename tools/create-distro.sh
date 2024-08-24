@@ -38,3 +38,4 @@ zip -r $DIST_NAME.zip $DIST_NAME
 sha256sum $DIST_NAME.zip > $DIST_NAME.zip.checksum
 echo " Size: " >> $DIST_NAME.zip.checksum
 ls -la $DIST_NAME.zip | sed -e "s/^\([^ ]\+ \+\)\{4\}\([^ ]\+\).*/\2/g" >> $DIST_NAME.zip.checksum
+cd -
