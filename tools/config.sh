@@ -45,6 +45,12 @@ AR_TOOLS="$AR_OUT/tools"
 AR_PLATFORM_TXT="$AR_OUT/platform.txt"
 AR_GEN_PART_PY="$AR_TOOLS/gen_esp32part.py"
 AR_SDK="$AR_TOOLS/sdk/$IDF_TARGET"
+if [ -z $DIST_PATH ]; then
+	export DIST_PATH="$AR_ROOT/dist"
+fi
+if [ -z $DIST_NAME ]; then
+	export DIST_NAME="phasedock-esp32-robotarm-1.0.0"
+fi
 
 function get_os(){
   	OSBITS=`uname -m`
