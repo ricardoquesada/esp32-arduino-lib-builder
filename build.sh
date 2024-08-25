@@ -15,12 +15,6 @@ BUILD_TYPE="all"
 SKIP_ENV=0
 COPY_OUT=1
 DEPLOY_OUT=0
-#export AR_BRANCH="2.0.17" #defaulting this to a known good version, can still be overridden
-#export IDF_BRANCH="release/v4.4" #defaulting this to a known good version, can still be overridden
-#export BLUEPAD32_BRANCH="4.1.0" #defaulting this to a known good version, can still be overridden
-#export CAMERA_BRANCH="v2.0.6" #defaulting this to a known good version, can still be overridden
-#export DEEP_LEARNING_BRANCH="v1.1.0" #defaulting this to a known good version, can still be overridden
-#export RAINMAKER_BRANCH="909c7f00be0cd3343ba18a174d403889f0ea314b" #commit of a known good build
 
 function print_help() {
     echo "Usage: build.sh [-s] [-A <arduino_branch>] [-I <idf_branch>] [-i <idf_commit>] [-c <path>] [-t <target>] [-b <build|menuconfig|idf_libs|copy_bootloader|mem_variant>] [config ...]"
@@ -217,30 +211,5 @@ fi
 if [ $DEPLOY_OUT -eq 1 ]; then
     ./tools/push-to-arduino.sh
 fi
-
-#  # set up arduino build
-#  # BOYD - move this to a script in tools
-#  mkdir -p $DIST_PATH
-#  rm -rf $DIST_PATH/*
-#  wget https://github.com/espressif/arduino-esp32/releases/download/$AR_BRANCH/esp32-$AR_BRANCH.zip
-#  unzip esp32-$AR_BRANCH.zip -d $DIST_PATH
-#  mv $DIST_PATH/esp32-$AR_BRANCH $DIST_PATH/esp32-bluepad32
-#  mkdir $DIST_PATH/esp32-bluepad32/package
-#
-#  ./tools/copy-to-arduino.sh
-#
-#  cp bluepad32_files/platform.txt bluepad32_files/package.json $DIST_PATH/esp32-bluepad32
-#  cat bluepad32_files/boards.txt | grep -v esp32s2 > $DIST_PATH/esp32-bluepad32/boards.txt
-#  cp -r bluepad32_files/libraries/* $DIST_PATH/esp32-bluepad32/libraries/
-#  cp -rn components/arduino/tools/sdk/esp32/include/* $DIST_PATH/esp32-bluepad32/tools/sdk/esp32/include/
-#  cp -rn components/arduino/tools/sdk/esp32/lib/* $DIST_PATH/esp32-bluepad32/tools/sdk/esp32/lib/
-#  cp -r components/arduino/libraries/* $DIST_PATH/esp32-bluepad32/libraries/
-#  cp -r phasedock_files/libraries/* $DIST_PATH/esp32-bluepad32/libraries/
-#  mv $DIST_PATH/esp32-bluepad32 $DIST_PATH/phasedock-esp32-robotarm-1.0.0
-#  cd $DIST_PATH
-#  zip -r phasedock-esp32-robotarm-1.0.0.zip phasedock-esp32-robotarm-1.0.0
-#  sha256sum phasedock-esp32-robotarm-1.0.0.zip > phasedock-esp32-robotarm-1.0.0.zip.checksum
-#  echo " Size: " >> phasedock-esp32-robotarm-1.0.0.zip.checksum
-#  ls -la phasedock-esp32-robotarm-1.0.0.zip | sed -e "s/^\([^ ]\+ \+\)\{4\}\([^ ]\+\).*/\2/g" >> phasedock-esp32-robotarm-1.0.0.zip.checksum
 
 ./tools/create-distro.sh
