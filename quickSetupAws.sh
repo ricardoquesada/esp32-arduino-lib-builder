@@ -13,3 +13,5 @@ git checkout release/v4.4
 esp-idf/install.sh
 esp-idf/export.sh
 ./build.sh
+
+#this file seems to be somewhat replicated in tools/prepare-ci.sh
